@@ -45,33 +45,49 @@ static bool invrep(abb tree) {
 }
 
 abb abb_empty(void) {
-    abb tree = NULL;
-    /*
-     * Needs implementation
-     */
-    tree = (abb)malloc(sizeof(struct _s_abb));
-    tree->elem=0;
-    tree->left=NULL;
-    tree->right=NULL;
-    assert(invrep(tree) && abb_is_empty(tree));
+    abb tree= NULL;
     return tree;
 }
 
 abb abb_add(abb tree, abb_elem e) {
     assert(invrep(tree));
+    abb nodo = (abb)malloc(sizeof(struct _s_abb));
+    nodo->elem=e;
+    nodo->left = NULL;
+    nodo->right = NULL;
     /*
      * Needs implementation
      */
+    bool nonstop =true;
     if (abb_is_empty(tree))
     {
-        tree->elem = e;
-        tree->left=NULL;
-        tree->right = NULL;
-    }else if (tree->elem >=e)
-    {
-        tree = abb_add(tree->right, e);             
+        return nodo;
     }else{
-        tree = abb_add(tree->left, e);
+        abb p = tree;
+        while (nonstop)
+        {
+            if (elem_less(e,p->elem) && p->left!=NULL)
+            {
+                p= p->left;
+            }
+            else if (elem_less(p->elem,e) && p->right!=NULL)
+            {
+                p=p->right;
+            }
+            else
+            {
+                nonstop=false;
+            }
+            
+        }
+        if (elem_less(e, p->elem))
+        {
+            p->left = nodo;
+        }else if(elem_less(p->elem, e) || elem_eq(e, p->elem)){
+            p->right = nodo;
+        }
+        
+        
     }
     assert(invrep(tree) && abb_exists(tree, e));                  //should work, except to the first condition...
     return tree;
@@ -127,7 +143,30 @@ abb abb_remove(abb tree, abb_elem e) {
     /*
      * Needs implementation
      */
-    if(tree->elem == e ){
+    if(abb_exists(tree, e)){
+        bool no_stop = true;
+        abb p = tree;
+        while (no_stop)
+        {
+            if (elem_less(e, p->elem))
+            {
+                p = p->left;
+            }else if(elem_less(p->elem, e)){
+                p = p->right;
+            }else{
+                no_stop = false;
+            }
+        }
+        if (p->left ==NULL && p->right == NULL)
+        {
+            p=NULL;
+        }
+        if (p->left!=NULL)
+        {
+            p->elem = abb_max(p->left);
+        }else{
+            p->elem = abb_min(p->right);
+        }
 
     }
     assert(invrep(tree) && !abb_exists(tree, e));
