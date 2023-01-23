@@ -164,8 +164,10 @@ abb abb_remove(abb tree, abb_elem e) {
         if (p->left!=NULL)
         {
             p->elem = abb_max(p->left);
+            p->left = abb_remove(p->left,p->elem);
         }else{
             p->elem = abb_min(p->right);
+            p->right = abb_remove(p->right,p->elem);
         }
 
     }
