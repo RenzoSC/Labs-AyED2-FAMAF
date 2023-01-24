@@ -21,8 +21,12 @@ static bool elem_less(abb_elem a, abb_elem b) {
 static bool invrep(abb tree) {
     
     bool valid = true;
+    if (tree ==NULL)
+    {
+        return true;
+    }
     abb_elem root = tree->elem;
-    if ( tree->left == NULL && tree->right == NULL )
+    if ( (tree->left == NULL && tree->right == NULL))
     {
         return true;
     }else if (tree->left==NULL)
@@ -45,16 +49,19 @@ static bool invrep(abb tree) {
 }
 
 abb abb_empty(void) {
-    abb tree= NULL;
+    abb tree = (abb)malloc(sizeof(struct _s_abb));
+    tree->elem=0;
+    tree->left = NULL;
+    tree->right = NULL;
     return tree;
 }
 
 abb abb_add(abb tree, abb_elem e) {
     assert(invrep(tree));
     abb nodo = (abb)malloc(sizeof(struct _s_abb));
-    nodo->elem=e;
-    nodo->left = NULL;
-    nodo->right = NULL;
+    nodo->elem = e;
+    nodo->left= NULL;
+    nodo->right=NULL;
     /*
      * Needs implementation
      */
@@ -99,7 +106,11 @@ bool abb_is_empty(abb tree) {
     /*
      * Needs implementation
      */
-    is_empty=tree ==NULL ;
+    if (tree->elem==0 && tree->left==NULL && tree->right==NULL)
+    {
+        return true;
+    }
+    
     return is_empty;
 }
 
@@ -109,12 +120,16 @@ bool abb_exists(abb tree, abb_elem e) {
     /*
     * Needs implementation
     */
-    if (tree->elem <= e && tree->right !=NULL)
+    if (tree->elem < e && tree->right !=NULL)
     {
         exists = abb_exists(tree->right, e);
     }else if(tree->elem >e && tree->left !=NULL){
         exists = abb_exists(tree->left, e);
+    }else if (tree->elem == e)
+    {
+        return true;
     }
+    
 
     return exists;
 }
@@ -238,6 +253,10 @@ abb abb_destroy(abb tree) {
      * Needs implementation
      */
     free(tree);
+    tree->right = NULL;
+    tree->left = NULL;
+    tree->elem = 0;
+    tree = NULL;
     assert(tree == NULL);
     return tree;
 }
