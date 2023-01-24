@@ -189,7 +189,7 @@ abb_elem abb_root(abb tree) {
 }
 
 abb_elem abb_max(abb tree) {
-    abb_elem max_e;
+    abb max_e;
     assert(invrep(tree) && !abb_is_empty(tree));
     /*
      * Needs implementation
@@ -201,14 +201,13 @@ abb_elem abb_max(abb tree) {
         max_e = flag->right;
         flag = flag->right;
     }
-    max_e = flag->elem;
     
-    assert(invrep(tree) && abb_exists(tree, max_e));
-    return max_e;
+    assert(invrep(tree) && abb_exists(tree, max_e->elem));
+    return max_e->elem;
 }
 
 abb_elem abb_min(abb tree) {
-    abb_elem min_e;
+    abb min_e;
     assert(invrep(tree) && !abb_is_empty(tree));
     /*
      * Needs implementation
@@ -220,9 +219,8 @@ abb_elem abb_min(abb tree) {
         min_e = flag->left;
         flag = flag->left;
     }
-    min_e = flag->elem;
-    assert(invrep(tree) && abb_exists(tree, min_e));
-    return min_e;
+    assert(invrep(tree) && abb_exists(tree, min_e->elem));
+    return min_e->elem;
 }
 
 void abb_dump(abb tree) {
