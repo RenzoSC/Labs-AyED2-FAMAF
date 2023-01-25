@@ -49,11 +49,7 @@ static bool invrep(abb tree) {
 }
 
 abb abb_empty(void) {
-    abb tree = (abb)malloc(sizeof(struct _s_abb));
-    tree->elem=0;
-    tree->left = NULL;
-    tree->right = NULL;
-    return tree;
+    return NULL;
 }
 
 abb abb_add(abb tree, abb_elem e) {
@@ -106,7 +102,7 @@ bool abb_is_empty(abb tree) {
     /*
      * Needs implementation
      */
-    if (tree->elem==0 && tree->left==NULL && tree->right==NULL)
+    if (tree==NULL)
     {
         return true;
     }
@@ -174,7 +170,7 @@ abb abb_remove(abb tree, abb_elem e) {
         }
         if (p->left ==NULL && p->right == NULL)
         {
-            p=NULL;
+            p = abb_destroy(p);
         }
         if (p->left!=NULL)
         {
@@ -204,38 +200,44 @@ abb_elem abb_root(abb tree) {
 }
 
 abb_elem abb_max(abb tree) {
-    abb max_e;
     assert(invrep(tree) && !abb_is_empty(tree));
     /*
      * Needs implementation
      */
     abb flag = tree;
-    while (flag->right != NULL)
-    {
+    if(flag->right ==NULL){
+        return flag->elem;
+    }else{
+        while (flag->right != NULL)
+        {
 
-        max_e = flag->right;
-        flag = flag->right;
+            flag = flag->right;
+        }
     }
     
-    assert(invrep(tree) && abb_exists(tree, max_e->elem));
-    return max_e->elem;
+    assert(invrep(tree) && abb_exists(tree, flag->elem));
+    return flag->elem;
 }
 
 abb_elem abb_min(abb tree) {
-    abb min_e;
     assert(invrep(tree) && !abb_is_empty(tree));
     /*
      * Needs implementation
      */
     abb flag = tree;
-    while (flag->left != NULL)
+    if (flag->left ==NULL)
     {
+        return flag->elem;
+    }else{
+        while (flag->left != NULL)
+        {
 
-        min_e = flag->left;
-        flag = flag->left;
+            flag = flag->left;
+        }
     }
-    assert(invrep(tree) && abb_exists(tree, min_e->elem));
-    return min_e->elem;
+    
+    assert(invrep(tree) && abb_exists(tree, flag->elem));
+    return flag->elem;
 }
 
 void abb_dump(abb tree) {
@@ -248,16 +250,14 @@ void abb_dump(abb tree) {
 }
 
 abb abb_destroy(abb tree) {
-    assert(invrep(tree));
-    /*
-     * Needs implementation
-     */
+    if (tree == NULL) {
+        return NULL;
+    }
+    tree->left=abb_destroy(tree->left);
+    tree->right= abb_destroy(tree->right);
     free(tree);
-    tree->right = NULL;
-    tree->left = NULL;
-    tree->elem = 0;
-    tree = NULL;
-    assert(tree == NULL);
+    tree=NULL;
+    
     return tree;
 }
 
