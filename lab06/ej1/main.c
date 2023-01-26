@@ -114,7 +114,13 @@ int main(int argc, char *argv[]) {
         switch (entry) {
             case 1:
                 printf("\nElegiste la opción de mostrar el arbol por pantalla\n");
-                abb_dump(user_tree);
+                if (abb_is_empty(user_tree))
+                {
+                    printf("\nArbol vacio\n");
+                }else{
+                    abb_dump(user_tree);
+                }
+                
                 break;
             case 2:
                 

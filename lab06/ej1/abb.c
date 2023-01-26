@@ -116,7 +116,10 @@ bool abb_exists(abb tree, abb_elem e) {
     /*
     * Needs implementation
     */
-    if (tree->elem < e && tree->right !=NULL)
+    if (tree==NULL)
+    {
+        return false;
+    } else if(tree->elem < e && tree->right !=NULL)
     {
         exists = abb_exists(tree->right, e);
     }else if(tree->elem >e && tree->left !=NULL){
@@ -136,6 +139,11 @@ unsigned int abb_length(abb tree) {
     /*
      * Needs implementation
      */
+    if (tree->left == NULL && tree->right ==NULL)
+    {
+        return 1;
+    }
+    
     if (tree->left !=NULL)
     {
         length += 1+ abb_length(tree->left);
@@ -155,35 +163,50 @@ abb abb_remove(abb tree, abb_elem e) {
      * Needs implementation
      */
     if(abb_exists(tree, e)){
-        bool no_stop = true;
-        abb p = tree;
-        while (no_stop)
+    bool no_stop = true;
+    abb p= tree;
+    abb parent = NULL;
+    while (no_stop)
+    {
+        if (elem_less(e, p->elem))
         {
-            if (elem_less(e, p->elem))
-            {
-                p = p->left;
-            }else if(elem_less(p->elem, e)){
-                p = p->right;
-            }else{
-                no_stop = false;
-            }
-        }
-        if (p->left ==NULL && p->right == NULL)
-        {
-            p = abb_destroy(p);
-        }
-        if (p->left!=NULL)
-        {
-            p->elem = abb_max(p->left);
-            p->left = abb_remove(p->left,p->elem);
+            parent = p;
+            p = p->left;
+        }else if(elem_less(p->elem, e)){
+            parent = p;
+            p = p->right;
         }else{
-            p->elem = abb_min(p->right);
-            p->right = abb_remove(p->right,p->elem);
+            no_stop = false;
         }
+    } //busca el elemento a eliminar
 
+    if (p->left ==NULL && p->right == NULL) //caso en el que es una hoja
+    {
+        if(parent != NULL){
+            if(parent->left == p) parent->left = NULL;
+            else parent->right = NULL;
+        }
+        p=abb_destroy(p);
+        return tree;    
+    }else if(p->left==NULL){ 
+        p->elem = p->right->elem;
+            p->left = p->right->left;
+            p->right = p->right->right;
+            abb_destroy(p->right);
+            return tree;  
+    }else if(p->right ==NULL){                        //caso en el que solo tiene hoja izquierda
+        p->elem = p->left->elem;
+            p->right = p->left->right;
+            p->left = p->left->left;
+            abb_destroy(p->left);
+            return tree; 
+    }else{                                            //caso en el que tiene dos hojas
+        p->elem = abb_max(p->left);
+        p->left = abb_remove(p->left,p->left->elem);
     }
-    assert(invrep(tree) && !abb_exists(tree, e));
-    return tree;
+}
+assert(invrep(tree) && !abb_exists(tree, e));
+return tree;
 }
 
 
