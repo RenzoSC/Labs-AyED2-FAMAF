@@ -18,7 +18,7 @@ static bool invrep(graph_t g) {
      * TODO: Completar
      *
      */
-    return g!=NULL;
+    return g!=NULL && (g->max_vertexs>0 && g->costs!=NULL);
 }
 
 graph_t graph_empty(unsigned int max_vertexs)
@@ -28,7 +28,6 @@ graph_t graph_empty(unsigned int max_vertexs)
     graph->max_vertexs = max_vertexs;
     // Create adjacency matrix for graph
     cost_t costs_array[max_vertexs * max_vertexs];
-
     for (unsigned int i = 0; i < max_vertexs * max_vertexs; ++i) {
       costs_array[i] = cost_inf();
     }
@@ -54,6 +53,7 @@ void graph_add_edge(graph_t graph, vertex_t from, vertex_t to, cost_t cost)
      * TODO: Completar
      *
      */
+    index = g_index(from, to, graph->max_vertexs);
     graph->costs[index] = cost;
     assert(invrep(graph));
 }
@@ -68,6 +68,8 @@ cost_t graph_get_cost(graph_t graph, vertex_t from, vertex_t to)
      * TODO: Completar
      *
      */
+    index = g_index(from, to, graph->max_vertexs);
+
     return graph->costs[index];
 }
 
@@ -78,6 +80,7 @@ graph_t graph_destroy(graph_t graph)
      * TODO: COMPLETAR
      *
      */
+
     free(graph);
     graph = NULL;
     assert(graph == NULL);
